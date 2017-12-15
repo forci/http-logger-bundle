@@ -2,8 +2,6 @@
 
 namespace Forci\Bundle\HttpLoggerBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 class RequestLog {
 
     /** @var integer */

@@ -2,8 +2,6 @@
 
 namespace Forci\Bundle\HttpLoggerBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 class RequestLogMessageType {
 
     const ID_URL_ENCODED = 1,
