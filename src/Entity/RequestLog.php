@@ -1,13 +1,22 @@
 <?php
 
+/*
+ * This file is part of the ForciHttpLoggerBundle package.
+ *
+ * (c) Martin Kirilov <wucdbm@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Forci\Bundle\HttpLoggerBundle\Entity;
 
 class RequestLog {
 
-    /** @var integer */
+    /** @var int */
     protected $id;
 
-    /** @var integer */
+    /** @var int */
     protected $statusCode;
 
     /** @var string */
@@ -38,7 +47,8 @@ class RequestLog {
     protected $exception;
 
     /**
-     * No return type here, it may have not been set
+     * No return type here, it may have not been set.
+     *
      * @return int
      */
     public function getId() {
@@ -53,7 +63,8 @@ class RequestLog {
     }
 
     /**
-     * No return type here, it may have not been set
+     * No return type here, it may have not been set.
+     *
      * @return int
      */
     public function getStatusCode() {
@@ -68,7 +79,8 @@ class RequestLog {
     }
 
     /**
-     * No return type here, it may have not been set
+     * No return type here, it may have not been set.
+     *
      * @return string
      */
     public function getUrl() {
@@ -83,7 +95,8 @@ class RequestLog {
     }
 
     /**
-     * No return type here, it may have not been set
+     * No return type here, it may have not been set.
+     *
      * @return string
      */
     public function getMethod() {
@@ -126,7 +139,8 @@ class RequestLog {
     }
 
     /**
-     * No return type here, it may have not been set
+     * No return type here, it may have not been set.
+     *
      * @return string
      */
     public function getDebug() {
@@ -199,5 +213,4 @@ class RequestLog {
     public function __construct() {
         $this->date = new \DateTime();
     }
-
 }

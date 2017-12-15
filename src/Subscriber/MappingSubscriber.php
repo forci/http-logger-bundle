@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the ForciHttpLoggerBundle package.
+ *
+ * (c) Martin Kirilov <wucdbm@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Forci\Bundle\HttpLoggerBundle\Subscriber;
 
 use Doctrine\Common\EventSubscriber;
@@ -122,10 +131,10 @@ class MappingSubscriber implements EventSubscriber {
         $platform = $em->getConnection()->getDatabasePlatform();
 
         $idGenType = $metadata->generatorType;
-        if ($idGenType == ClassMetadata::GENERATOR_TYPE_AUTO) {
+        if (ClassMetadata::GENERATOR_TYPE_AUTO == $idGenType) {
             if ($platform->prefersSequences()) {
                 $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_SEQUENCE);
-            } else if ($platform->prefersIdentityColumns()) {
+            } elseif ($platform->prefersIdentityColumns()) {
                 $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_IDENTITY);
             } else {
                 $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_TABLE);
@@ -150,10 +159,10 @@ class MappingSubscriber implements EventSubscriber {
                 if ($platform instanceof Platforms\PostgreSqlPlatform) {
                     $columnName = $class->getSingleIdentifierColumnName();
                     $quoted = isset($class->fieldMappings[$fieldName]['quoted']) || isset($class->table['quoted']);
-                    $sequenceName = $class->getTableName() . '_' . $columnName . '_seq';
-                    $definition = array(
+                    $sequenceName = $class->getTableName().'_'.$columnName.'_seq';
+                    $definition = [
                         'sequenceName' => $platform->fixSchemaElementName($sequenceName)
-                    );
+                    ];
 
                     if ($quoted) {
                         $definition['quoted'] = true;
@@ -178,12 +187,12 @@ class MappingSubscriber implements EventSubscriber {
                     $fieldName = $class->getSingleIdentifierFieldName();
                     $columnName = $class->getSingleIdentifierColumnName();
                     $quoted = isset($class->fieldMappings[$fieldName]['quoted']) || isset($class->table['quoted']);
-                    $sequenceName = $class->getTableName() . '_' . $columnName . '_seq';
-                    $definition = array(
-                        'sequenceName'   => $platform->fixSchemaElementName($sequenceName),
+                    $sequenceName = $class->getTableName().'_'.$columnName.'_seq';
+                    $definition = [
+                        'sequenceName' => $platform->fixSchemaElementName($sequenceName),
                         'allocationSize' => 1,
-                        'initialValue'   => 1,
-                    );
+                        'initialValue' => 1,
+                    ];
 
                     if ($quoted) {
                         $definition['quoted'] = true;
@@ -208,20 +217,20 @@ class MappingSubscriber implements EventSubscriber {
                 break;
 
             case ClassMetadata::GENERATOR_TYPE_TABLE:
-                throw new ORMException("TableGenerator not yet implemented.");
+                throw new ORMException('TableGenerator not yet implemented.');
                 break;
 
             case ClassMetadata::GENERATOR_TYPE_CUSTOM:
                 $definition = $class->customGeneratorDefinition;
                 if (!class_exists($definition['class'])) {
-                    throw new ORMException("Can't instantiate custom generator : " .
+                    throw new ORMException("Can't instantiate custom generator : ".
                         $definition['class']);
                 }
-                $class->setIdGenerator(new $definition['class']);
+                $class->setIdGenerator(new $definition['class']());
                 break;
 
             default:
-                throw new ORMException("Unknown generator type: " . $class->generatorType);
+                throw new ORMException('Unknown generator type: '.$class->generatorType);
         }
     }
 
@@ -333,14 +342,14 @@ class MappingSubscriber implements EventSubscriber {
 //        protected $request;
         if (!$metadata->hasAssociation('request')) {
             $metadata->mapOneToOne([
-                'fieldName'    => 'request',
-                'inversedBy'   => 'requestTo',
-                'cascade'      => ['persist', 'merge'],
-                'fetch'        => 'EAGER',
-                'joinColumns'  => [[
-                    'name'                 => 'request_id',
+                'fieldName' => 'request',
+                'inversedBy' => 'requestTo',
+                'cascade' => ['persist', 'merge'],
+                'fetch' => 'EAGER',
+                'joinColumns' => [[
+                    'name' => 'request_id',
                     'referencedColumnName' => 'id',
-                    'nullable'             => true
+                    'nullable' => true
                 ]],
                 'targetEntity' => $config['log_message_class']
             ]);
@@ -353,14 +362,14 @@ class MappingSubscriber implements EventSubscriber {
 //        protected $response;
         if (!$metadata->hasAssociation('response')) {
             $metadata->mapOneToOne([
-                'fieldName'    => 'response',
-                'inversedBy'   => 'responseTo',
-                'cascade'      => ['persist', 'merge'],
-                'fetch'        => 'EAGER',
-                'joinColumns'  => [[
-                    'name'                 => 'response_id',
+                'fieldName' => 'response',
+                'inversedBy' => 'responseTo',
+                'cascade' => ['persist', 'merge'],
+                'fetch' => 'EAGER',
+                'joinColumns' => [[
+                    'name' => 'response_id',
                     'referencedColumnName' => 'id',
-                    'nullable'             => true
+                    'nullable' => true
                 ]],
                 'targetEntity' => $config['log_message_class']
             ]);
@@ -373,17 +382,17 @@ class MappingSubscriber implements EventSubscriber {
 //        protected $exception;
         if (!$metadata->hasAssociation('exception')) {
             $metadata->mapOneToOne([
-                'fieldName'     => 'exception',
-                'inversedBy'    => 'log',
+                'fieldName' => 'exception',
+                'inversedBy' => 'log',
                 'orphanRemoval' => true,
-                'cascade'       => ['persist', 'merge'],
-                'fetch'         => 'EAGER',
-                'joinColumns'   => [[
-                    'name'                 => 'exception_id',
+                'cascade' => ['persist', 'merge'],
+                'fetch' => 'EAGER',
+                'joinColumns' => [[
+                    'name' => 'exception_id',
                     'referencedColumnName' => 'id',
-                    'nullable'             => true
+                    'nullable' => true
                 ]],
-                'targetEntity'  => $config['log_exception_class']
+                'targetEntity' => $config['log_exception_class']
             ]);
         }
     }
@@ -419,10 +428,10 @@ class MappingSubscriber implements EventSubscriber {
 //        protected $requestTo;
         if (!$metadata->hasAssociation('requestTo')) {
             $metadata->mapOneToOne([
-                'fieldName'    => 'requestTo',
-                'mappedBy'     => 'request',
-                'cascade'      => ['persist', 'merge', 'remove'],
-                'fetch'        => 'EAGER',
+                'fieldName' => 'requestTo',
+                'mappedBy' => 'request',
+                'cascade' => ['persist', 'merge', 'remove'],
+                'fetch' => 'EAGER',
                 'targetEntity' => $config['log_class']
             ]);
         }
@@ -433,10 +442,10 @@ class MappingSubscriber implements EventSubscriber {
 //        protected $responseTo;
         if (!$metadata->hasAssociation('responseTo')) {
             $metadata->mapOneToOne([
-                'fieldName'    => 'responseTo',
-                'mappedBy'     => 'response',
-                'cascade'      => ['persist', 'merge', 'remove'],
-                'fetch'        => 'EAGER',
+                'fieldName' => 'responseTo',
+                'mappedBy' => 'response',
+                'cascade' => ['persist', 'merge', 'remove'],
+                'fetch' => 'EAGER',
                 'targetEntity' => $config['log_class']
             ]);
         }
@@ -448,13 +457,13 @@ class MappingSubscriber implements EventSubscriber {
 //        protected $type;
         if (!$metadata->hasAssociation('type')) {
             $metadata->mapManyToOne([
-                'fieldName'    => 'type',
-                'inversedBy'   => 'messages',
-                'fetch'        => 'EAGER',
-                'joinColumns'  => [[
-                    'name'                 => 'type_id',
+                'fieldName' => 'type',
+                'inversedBy' => 'messages',
+                'fetch' => 'EAGER',
+                'joinColumns' => [[
+                    'name' => 'type_id',
                     'referencedColumnName' => 'id',
-                    'nullable'             => false
+                    'nullable' => false
                 ]],
                 'targetEntity' => $config['log_message_type_class']
             ]);
@@ -503,9 +512,9 @@ class MappingSubscriber implements EventSubscriber {
 //        protected $messages;
         if (!$metadata->hasAssociation('messages')) {
             $metadata->mapOneToMany([
-                'fieldName'    => 'messages',
-                'mappedBy'     => 'type',
-                'fetch'        => 'EAGER',
+                'fieldName' => 'messages',
+                'mappedBy' => 'type',
+                'fetch' => 'EAGER',
                 'targetEntity' => $config['log_message_class'],
             ]);
         }
@@ -606,12 +615,11 @@ class MappingSubscriber implements EventSubscriber {
 //        protected $log;
         if (!$metadata->hasAssociation('log')) {
             $metadata->mapOneToOne([
-                'fieldName'    => 'log',
-                'mappedBy'     => 'exception',
-                'fetch'        => 'EAGER',
+                'fieldName' => 'log',
+                'mappedBy' => 'exception',
+                'fetch' => 'EAGER',
                 'targetEntity' => $config['log_class'],
             ]);
         }
     }
-
 }

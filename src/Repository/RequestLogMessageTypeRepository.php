@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the ForciHttpLoggerBundle package.
+ *
+ * (c) Martin Kirilov <wucdbm@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Forci\Bundle\HttpLoggerBundle\Repository;
 
 use Forci\Bundle\HttpLoggerBundle\Entity\RequestLogMessageType;
@@ -8,7 +17,9 @@ class RequestLogMessageTypeRepository extends \Doctrine\ORM\EntityRepository {
 
     /**
      * @param $id
+     *
      * @return RequestLogMessageType
+     *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function findOneById(int $id) {
@@ -26,5 +37,4 @@ class RequestLogMessageTypeRepository extends \Doctrine\ORM\EntityRepository {
         $em->persist($type);
         $em->flush($type);
     }
-
 }

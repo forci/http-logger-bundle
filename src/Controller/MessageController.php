@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the ForciHttpLoggerBundle package.
+ *
+ * (c) Martin Kirilov <wucdbm@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Forci\Bundle\HttpLoggerBundle\Controller;
 
 use Camspiers\JsonPretty\JsonPretty;
@@ -17,7 +26,7 @@ class MessageController extends Controller {
         /** @var RequestLogMessageRepository $repository */
         $repository = $em->getRepository($class);
         $message = $repository->findOneById($id);
-        if ($message->getType()->getId() == RequestLogMessageType::ID_XML) {
+        if (RequestLogMessageType::ID_XML == $message->getType()->getId()) {
             $formatter = new Formatter();
             $content = $formatter->format($message->getContent());
             $response = new Response($content);
@@ -26,7 +35,7 @@ class MessageController extends Controller {
             return $response;
         }
 
-        if ($message->getType()->getId() == RequestLogMessageType::ID_JSON) {
+        if (RequestLogMessageType::ID_JSON == $message->getType()->getId()) {
             $jsonPretty = new JsonPretty();
             $content = $jsonPretty->prettify($message->getContent());
             $response = new Response($content);
@@ -35,21 +44,21 @@ class MessageController extends Controller {
             return $response;
         }
 
-        if ($message->getType()->getId() == RequestLogMessageType::ID_TEXT_PLAIN) {
+        if (RequestLogMessageType::ID_TEXT_PLAIN == $message->getType()->getId()) {
             $response = new Response($message->getContent());
             $response->headers->set('Content-type', 'text/plain');
 
             return $response;
         }
 
-        if ($message->getType()->getId() == RequestLogMessageType::ID_HTML) {
+        if (RequestLogMessageType::ID_HTML == $message->getType()->getId()) {
             $response = new Response($message->getContent());
             $response->headers->set('Content-type', 'text/html');
 
             return $response;
         }
 
-        if ($message->getType()->getId() == RequestLogMessageType::ID_URL_ENCODED) {
+        if (RequestLogMessageType::ID_URL_ENCODED == $message->getType()->getId()) {
             $contents = $message->getContent();
 
             $array = explode('&', $contents);
@@ -75,7 +84,7 @@ class MessageController extends Controller {
         /** @var RequestLogMessageRepository $repository */
         $repository = $em->getRepository($class);
         $message = $repository->findOneById($id);
+
         return new Response($message->getContent());
     }
-
 }
