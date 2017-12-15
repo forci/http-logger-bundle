@@ -1,0 +1,7 @@
+forci_http_logger_bundle_message_view:
+    path:      /{id}/view/{class}
+    defaults:  { _controller: ForciHttpLoggerBundle:Message:view }
+
+forci_http_logger_bundle_message_view_raw:
+    path:      /{id}/view-raw/{class}
+    defaults:  { _controller: ForciHttpLoggerBundle:Message:viewRaw }

@@ -1,0 +1,33 @@
+{
+    "name": "forci/http-logger-bundle",
+    "type": "symfony-bundle",
+    "description": "A Symfony 3.0 Bundle for hosting HTTP Request/Responses, as well as exceptions that occur during the handling of those",
+    "keywords": ["forci", "wucdbm", "http", "http logger", "http logger bundle", "http request response log", "http log bundle", "symfony http log"],
+    "authors": [
+        {
+            "name": "Martin Kirilov",
+            "email": "wucdbm@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "~7.0",
+        "symfony/symfony": "~3.0|~4.0",
+        "doctrine/doctrine-bundle": "^1.6",
+        "shanethehat/pretty-xml": "~1.0",
+        "camspiers/json-pretty": "~1.0"
+    },
+    "require-dev": {
+        "guzzlehttp/guzzle": "~6.0",
+        "doctrine/orm": "~2.5",
+        "friendsofphp/php-cs-fixer": "^2.8",
+        "wucdbm/php-cs-fixers": "~0.2"
+    },
+    "autoload": {
+        "psr-4": { "Forci\\Bundle\\HttpLoggerBundle\\": "src" }
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "license": "GPL-3.0"
+}
