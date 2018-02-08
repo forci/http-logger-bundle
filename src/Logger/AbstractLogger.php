@@ -11,19 +11,19 @@
  * file that was distributed with this source code.
  */
 
-namespace Forci\Bundle\HttpLoggerBundle\Logger;
+namespace Forci\Bundle\HttpLogger\Logger;
 
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Forci\Bundle\HttpLoggerBundle\Entity\RequestLog;
-use Forci\Bundle\HttpLoggerBundle\Entity\RequestLogException;
-use Forci\Bundle\HttpLoggerBundle\Entity\RequestLogMessage;
-use Forci\Bundle\HttpLoggerBundle\Entity\RequestLogMessageType;
-use Forci\Bundle\HttpLoggerBundle\Repository\RequestLogExceptionRepository;
-use Forci\Bundle\HttpLoggerBundle\Repository\RequestLogMessageRepository;
-use Forci\Bundle\HttpLoggerBundle\Repository\RequestLogMessageTypeRepository;
-use Forci\Bundle\HttpLoggerBundle\Repository\RequestLogRepository;
+use Forci\Bundle\HttpLogger\Entity\RequestLog;
+use Forci\Bundle\HttpLogger\Entity\RequestLogException;
+use Forci\Bundle\HttpLogger\Entity\RequestLogMessage;
+use Forci\Bundle\HttpLogger\Entity\RequestLogMessageType;
+use Forci\Bundle\HttpLogger\Repository\RequestLogExceptionRepository;
+use Forci\Bundle\HttpLogger\Repository\RequestLogMessageRepository;
+use Forci\Bundle\HttpLogger\Repository\RequestLogMessageTypeRepository;
+use Forci\Bundle\HttpLogger\Repository\RequestLogRepository;
 
 abstract class AbstractLogger {
 

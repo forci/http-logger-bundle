@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Forci\Bundle\HttpLoggerBundle\DependencyInjection;
+namespace Forci\Bundle\HttpLogger\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

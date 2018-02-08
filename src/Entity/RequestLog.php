@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Forci\Bundle\HttpLoggerBundle\Entity;
+namespace Forci\Bundle\HttpLogger\Entity;
 
 class RequestLog {
 

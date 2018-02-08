@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Forci\Bundle\HttpLoggerBundle\Subscriber;
+namespace Forci\Bundle\HttpLogger\Subscriber;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\DBAL\Platforms;
@@ -338,7 +338,7 @@ class MappingSubscriber implements EventSubscriber {
         }
 
 //        /**
-//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLoggerBundle\Entity\BookingLogMessage", inversedBy="requestTo", orphanRemoval=true)
+//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\BookingLogMessage", inversedBy="requestTo", orphanRemoval=true)
 //         * @ORM\JoinColumn(name="request_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
 //         */
 //        protected $request;
@@ -358,7 +358,7 @@ class MappingSubscriber implements EventSubscriber {
         }
 
 //        /**
-//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLoggerBundle\Entity\BookingLogMessage", inversedBy="responseTo", orphanRemoval=true)
+//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\BookingLogMessage", inversedBy="responseTo", orphanRemoval=true)
 //         * @ORM\JoinColumn(name="response_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
 //         */
 //        protected $response;
@@ -378,7 +378,7 @@ class MappingSubscriber implements EventSubscriber {
         }
 
 //        /**
-//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLoggerBundle\Entity\RequestLogException", inversedBy="log", orphanRemoval=true)
+//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\RequestLogException", inversedBy="log", orphanRemoval=true)
 //         * @ORM\JoinColumn(name="exception_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
 //         */
 //        protected $exception;
@@ -425,7 +425,7 @@ class MappingSubscriber implements EventSubscriber {
         }
 
 //        /**
-//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLoggerBundle\Entity\RequestLog", mappedBy="request")
+//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\RequestLog", mappedBy="request")
 //         */
 //        protected $requestTo;
         if (!$metadata->hasAssociation('requestTo')) {
@@ -439,7 +439,7 @@ class MappingSubscriber implements EventSubscriber {
         }
 
 //        /**
-//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLoggerBundle\Entity\RequestLog", mappedBy="response")
+//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\RequestLog", mappedBy="response")
 //         */
 //        protected $responseTo;
         if (!$metadata->hasAssociation('responseTo')) {
@@ -453,7 +453,7 @@ class MappingSubscriber implements EventSubscriber {
         }
 
 //        /**
-//         * @ORM\ManyToOne(targetEntity="Forci\Bundle\HttpLoggerBundle\Entity\RequestLogMessageType", inversedBy="messages")
+//         * @ORM\ManyToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\RequestLogMessageType", inversedBy="messages")
 //         * @ORM\JoinColumn(name="type_id", referencedColumnName="id", nullable=false)
 //         */
 //        protected $type;
@@ -509,7 +509,7 @@ class MappingSubscriber implements EventSubscriber {
         }
 
 //        /**
-//         * @ORM\OneToMany(targetEntity="Forci\Bundle\HttpLoggerBundle\Entity\RequestLogMessage", mappedBy="type")
+//         * @ORM\OneToMany(targetEntity="Forci\Bundle\HttpLogger\Entity\RequestLogMessage", mappedBy="type")
 //         */
 //        protected $messages;
         if (!$metadata->hasAssociation('messages')) {
@@ -612,7 +612,7 @@ class MappingSubscriber implements EventSubscriber {
         }
 
 //        /**
-//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLoggerBundle\Entity\RequestLog", mappedBy="exception")
+//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\RequestLog", mappedBy="exception")
 //         */
 //        protected $log;
         if (!$metadata->hasAssociation('log')) {

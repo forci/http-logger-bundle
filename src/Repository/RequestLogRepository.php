@@ -11,9 +11,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Forci\Bundle\HttpLoggerBundle\Repository;
+namespace Forci\Bundle\HttpLogger\Repository;
 
-use Forci\Bundle\HttpLoggerBundle\Entity\RequestLog;
+use Forci\Bundle\HttpLogger\Entity\RequestLog;
 
 class RequestLogRepository extends \Doctrine\ORM\EntityRepository {
 

@@ -14,20 +14,20 @@ You should implement that on your own.
 ```php
 <?php
 
-/** @var \Forci\Bundle\HttpLoggerBundle\Logger\AbstractLogger $manager */
+/** @var \Forci\Bundle\HttpLogger\Logger\AbstractLogger $manager */
 $manager = $this->container->get('some.logger');
-/** @var \Forci\Bundle\HttpLoggerBundle\Entity\RequestLog $log */
+/** @var \Forci\Bundle\HttpLogger\Entity\RequestLog $log */
 $log = $manager->log('This is some message with any information that would eventually help you once you need to debug something');
 
 try {
     $client = new \GuzzleHttp\Client();
     $request = new \GuzzleHttp\Psr7\Request('GET', 'http://some-website.com/');
 
-    $manager->logRequest($log, $request, \Forci\Bundle\HttpLoggerBundle\Entity\RequestLogMessageType::ID_TEXT_PLAIN);
+    $manager->logRequest($log, $request, \Forci\Bundle\HttpLogger\Entity\RequestLogMessageType::ID_TEXT_PLAIN);
 
     $response = $client->send($request);
 
-    $manager->logResponse($log, $response, \Forci\Bundle\HttpLoggerBundle\Entity\RequestLogMessageType::ID_HTML);
+    $manager->logResponse($log, $response, \Forci\Bundle\HttpLogger\Entity\RequestLogMessageType::ID_HTML);
 
     $ex = new \Exception('First Exception');
 
@@ -49,13 +49,13 @@ try {
         \GuzzleHttp\RequestOptions::BODY => 'SomeBody'
     ]);
 
-    $this->logRequest($log, $request, \Forci\Bundle\HttpLoggerBundle\Entity\RequestLogMessageType::ID_XML);
+    $this->logRequest($log, $request, \Forci\Bundle\HttpLogger\Entity\RequestLogMessageType::ID_XML);
 
     $this->pool->sendAsync($request, function (\Psr\Http\Message\ResponseInterface $response) use ($log) {
         try {
             $rawResponse = $response->getBody()->getContents();
 
-            $this->logResponse($log, $response, \Forci\Bundle\HttpLoggerBundle\Entity\RequestLogMessageType::ID_XML);
+            $this->logResponse($log, $response, \Forci\Bundle\HttpLogger\Entity\RequestLogMessageType::ID_XML);
 
             /** @var \Symfony\Component\DomCrawler\Crawler $crawler */
             $crawler = new \Symfony\Component\DomCrawler\Crawler($rawResponse);
@@ -70,7 +70,7 @@ try {
             $this->exception($log, $ex);
         }
     }, function (\GuzzleHttp\Exception\RequestException $ex) use ($log) {
-        $this->requestException($log, $ex, \Forci\Bundle\HttpLoggerBundle\Entity\RequestLogMessageType::ID_XML);
+        $this->requestException($log, $ex, \Forci\Bundle\HttpLogger\Entity\RequestLogMessageType::ID_XML);
     });
 } catch (\Throwable $ex) {
     $this->exception($log, $ex);
@@ -103,7 +103,7 @@ forci_http_logger:
 // Add this to your AppKernel.php
 $bundles = [
     // ...
-    new \Forci\Bundle\HttpLoggerBundle\ForciHttpLoggerBundle(),
+    new \Forci\Bundle\HttpLogger\ForciHttpLoggerBundle(),
     // ...
 ];
 ```
@@ -122,7 +122,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="SomeRepositoryClass")
  */
-class YourRequestLog extends \Forci\Bundle\HttpLoggerBundle\Entity\RequestLog {
+class YourRequestLog extends \Forci\Bundle\HttpLogger\Entity\RequestLog {
 
     /**
      * @ORM\ManyToOne(targetEntity="Some\Name\Space\SomeOtherEntity", inversedBy="inverseSideField")
@@ -144,7 +144,7 @@ This may be automated in future versions, so I would advise against creating con
 namespace App\Logger;
 
 // any other use, dopped for brevity
-use Forci\Bundle\HttpLoggerBundle\Logger\AbstractLogger;
+use Forci\Bundle\HttpLogger\Logger\AbstractLogger;
 
 class YourRequestLogLogger extends AbstractLogger {
 

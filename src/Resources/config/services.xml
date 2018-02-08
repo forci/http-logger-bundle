@@ -3,7 +3,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="forci_http_logger.doctrine_mapping_subscriber.class">Forci\Bundle\HttpLoggerBundle\Subscriber\MappingSubscriber</parameter>
+        <parameter key="forci_http_logger.doctrine_mapping_subscriber.class">Forci\Bundle\HttpLogger\Subscriber\MappingSubscriber</parameter>
     </parameters>
 
     <services>

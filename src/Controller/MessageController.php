@@ -11,14 +11,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Forci\Bundle\HttpLoggerBundle\Controller;
+namespace Forci\Bundle\HttpLogger\Controller;
 
 use Camspiers\JsonPretty\JsonPretty;
 use PrettyXml\Formatter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
-use Forci\Bundle\HttpLoggerBundle\Entity\RequestLogMessageType;
-use Forci\Bundle\HttpLoggerBundle\Repository\RequestLogMessageRepository;
+use Forci\Bundle\HttpLogger\Entity\RequestLogMessageType;
+use Forci\Bundle\HttpLogger\Repository\RequestLogMessageRepository;
 
 class MessageController extends Controller {
 

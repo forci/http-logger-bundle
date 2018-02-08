@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Forci\Bundle\HttpLoggerBundle;
+namespace Forci\Bundle\HttpLogger;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

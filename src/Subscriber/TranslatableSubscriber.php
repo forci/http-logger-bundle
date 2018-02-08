@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Forci\Bundle\HttpLoggerBundle\Subscriber;
+namespace Forci\Bundle\HttpLogger\Subscriber;
 
 use Knp\DoctrineBehaviors\ORM\Translatable\UniqueIndexNameGeneratorInterface;
 use Knp\DoctrineBehaviors\Reflection\ClassAnalyzer;
