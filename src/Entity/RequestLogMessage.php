@@ -1,17 +1,8 @@
 <?php
 
-/*
- * This file is part of the ForciHttpLoggerBundle package.
- *
- * Copyright (c) Forci Web Consulting Ltd.
- *
- * Author Martin Kirilov <martin@forci.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Forci\Bundle\HttpLogger\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
 
 class RequestLogMessage {
 
@@ -19,6 +10,9 @@ class RequestLogMessage {
 
     /** @var string */
     protected $content;
+
+    /** @var array */
+    protected $headers = [];
 
     /** @var RequestLog */
     protected $requestTo;
@@ -116,7 +110,22 @@ class RequestLogMessage {
         $this->date = $date;
     }
 
+    /**
+     * @return array
+     */
+    public function getHeaders(): array {
+        return $this->headers;
+    }
+
+    /**
+     * @param array $headers
+     */
+    public function setHeaders(array $headers) {
+        $this->headers = $headers;
+    }
+
     public function __construct() {
         $this->date = new \DateTime();
     }
+
 }

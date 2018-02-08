@@ -17,12 +17,7 @@ use Forci\Bundle\HttpLogger\Entity\RequestLogMessage;
 
 class RequestLogMessageRepository extends \Doctrine\ORM\EntityRepository {
 
-    /**
-     * @param $id
-     *
-     * @return RequestLogMessage|null
-     */
-    public function findOneById($id) {
+    public function findOneById($id): ?RequestLogMessage {
         $builder = $this->createQueryBuilder('m')
             ->addSelect('t')
             ->leftJoin('m.type', 't')

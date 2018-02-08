@@ -1,25 +1,16 @@
 <?php
 
-/*
- * This file is part of the ForciHttpLoggerBundle package.
- *
- * Copyright (c) Forci Web Consulting Ltd.
- *
- * Author Martin Kirilov <martin@forci.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Forci\Bundle\HttpLogger\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
 
 class RequestLogMessageType {
 
-    const ID_URL_ENCODED = 1;
-    const ID_HTML = 2;
-    const ID_XML = 3;
-    const ID_JSON = 4;
-    const ID_TEXT_PLAIN = 5;
+    const ID_URL_ENCODED = 1,
+        ID_HTML = 2,
+        ID_XML = 3,
+        ID_JSON = 4,
+        ID_TEXT_PLAIN = 5;
 
     /** @var int */
     protected $id;
@@ -66,5 +57,7 @@ class RequestLogMessageType {
     }
 
     public function __construct() {
+        //
     }
+
 }

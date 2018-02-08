@@ -1,34 +1,25 @@
 <?php
 
-/*
- * This file is part of the ForciHttpLoggerBundle package.
- *
- * Copyright (c) Forci Web Consulting Ltd.
- *
- * Author Martin Kirilov <martin@forci.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Forci\Bundle\HttpLogger\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
 
 class RequestLog {
 
-    /** @var int */
+    /** @var integer */
     protected $id;
 
-    /** @var int */
+    /** @var integer */
     protected $statusCode;
 
-    /** @var string */
+    /** @var string|null */
     protected $url;
+
+    /** @var string|null */
+    protected $urlHash;
 
     /** @var string */
     protected $method;
-
-    /** @var array */
-    protected $headers = [];
 
     /** @var \DateTime */
     protected $date;
@@ -49,8 +40,7 @@ class RequestLog {
     protected $exception;
 
     /**
-     * No return type here, it may have not been set.
-     *
+     * No return type here, it may have not been set
      * @return int
      */
     public function getId() {
@@ -65,8 +55,7 @@ class RequestLog {
     }
 
     /**
-     * No return type here, it may have not been set.
-     *
+     * No return type here, it may have not been set
      * @return int
      */
     public function getStatusCode() {
@@ -81,8 +70,7 @@ class RequestLog {
     }
 
     /**
-     * No return type here, it may have not been set.
-     *
+     * No return type here, it may have not been set
      * @return string
      */
     public function getUrl() {
@@ -97,8 +85,7 @@ class RequestLog {
     }
 
     /**
-     * No return type here, it may have not been set.
-     *
+     * No return type here, it may have not been set
      * @return string
      */
     public function getMethod() {
@@ -141,8 +128,7 @@ class RequestLog {
     }
 
     /**
-     * No return type here, it may have not been set.
-     *
+     * No return type here, it may have not been set
      * @return string
      */
     public function getDebug() {
@@ -199,20 +185,21 @@ class RequestLog {
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getHeaders(): array {
-        return $this->headers;
+    public function getUrlHash() {
+        return $this->urlHash;
     }
 
     /**
-     * @param array $headers
+     * @param string $urlHash
      */
-    public function setHeaders(array $headers) {
-        $this->headers = $headers;
+    public function setUrlHash(string $urlHash) {
+        $this->urlHash = $urlHash;
     }
 
     public function __construct() {
         $this->date = new \DateTime();
     }
+
 }

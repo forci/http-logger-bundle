@@ -1,16 +1,5 @@
 <?php
 
-/*
- * This file is part of the ForciHttpLoggerBundle package.
- *
- * Copyright (c) Forci Web Consulting Ltd.
- *
- * Author Martin Kirilov <martin@forci.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Forci\Bundle\HttpLogger\Logger;
 
 use GuzzleHttp\Exception\RequestException;
@@ -42,10 +31,10 @@ abstract class AbstractLogger {
     private function getMessageLogTypeNameMap() {
         return [
             RequestLogMessageType::ID_URL_ENCODED => 'URL Encoded',
-            RequestLogMessageType::ID_HTML => 'HTML',
-            RequestLogMessageType::ID_XML => 'XML',
-            RequestLogMessageType::ID_JSON => 'JSON',
-            RequestLogMessageType::ID_TEXT_PLAIN => 'Plain Text',
+            RequestLogMessageType::ID_HTML        => 'HTML',
+            RequestLogMessageType::ID_XML         => 'XML',
+            RequestLogMessageType::ID_JSON        => 'JSON',
+            RequestLogMessageType::ID_TEXT_PLAIN  => 'Plain Text',
         ];
     }
 
@@ -57,7 +46,6 @@ abstract class AbstractLogger {
 
     /**
      * @param int $id
-     *
      * @return RequestLogMessageType
      */
     public function getLogMessageType(int $id) {
@@ -79,31 +67,30 @@ abstract class AbstractLogger {
 
     /**
      * Due to the invariant return types implementation in php
-     * We can't really set the return type here.
-     *
+     * We can't really set the return type here
      * @return RequestLog
      */
-    abstract protected function createLog();
+    protected abstract function createLog();
 
     /**
      * @return RequestLogMessage
      */
-    abstract protected function createLogMessage();
+    protected abstract function createLogMessage();
 
     /**
      * @return RequestLogException
      */
-    abstract protected function createLogException();
+    protected abstract function createLogException();
 
     /**
      * @return RequestLogMessageType
      */
-    abstract protected function createLogMessageType();
+    protected abstract function createLogMessageType();
 
     /**
      * You should implement your own log method, if you require any additional parameters
      * If not, copying the below in your implementation is OK
-     * Adapt anything else to your particular needs.
+     * Adapt anything else to your particular needs
      *
      * public function log(string $message) {
      *      $log = $this->_log($message);
@@ -116,7 +103,6 @@ abstract class AbstractLogger {
 
     /**
      * @param string $message
-     *
      * @return RequestLog
      */
     protected function _log(string $message) {
@@ -127,9 +113,9 @@ abstract class AbstractLogger {
     }
 
     /**
-     * @param RequestLog       $log
+     * @param RequestLog $log
      * @param RequestInterface $request
-     * @param int              $messageType
+     * @param int $messageType
      */
     public function logRequest(RequestLog $log, RequestInterface $request, int $messageType) {
         $this->_logRequest($log, $request, $messageType);
@@ -147,19 +133,24 @@ abstract class AbstractLogger {
 
         $message = $this->createLogMessage();
         $message->setContent($content);
+        $message->setHeaders($request->getHeaders());
         $message->setType($messageType);
+        $message->setRequestTo($log);
 
         $log->setRequest($message);
 
-        $log->setUrl($request->getUri());
+        if ($url = $request->getUri()) {
+            $log->setUrl($url);
+            $log->setUrlHash(md5($url));
+        }
+
         $log->setMethod($request->getMethod());
-        $log->setHeaders($request->getHeaders());
     }
 
     /**
-     * @param RequestLog        $log
+     * @param RequestLog $log
      * @param ResponseInterface $response
-     * @param int               $messageType
+     * @param int $messageType
      */
     public function logResponse(RequestLog $log, ResponseInterface $response, int $messageType) {
         $this->_logResponse($log, $response, $messageType);
@@ -186,7 +177,9 @@ abstract class AbstractLogger {
         $messageType = $this->getLogMessageType($messageType);
         $message = $this->createLogMessage();
         $message->setContent($content);
+        $message->setHeaders($response->getHeaders());
         $message->setType($messageType);
+        $message->setResponseTo($log);
 
         $log->setResponse($message);
 
@@ -194,9 +187,9 @@ abstract class AbstractLogger {
     }
 
     /**
-     * @param RequestLog       $log
+     * @param RequestLog $log
      * @param RequestException $exception
-     * @param int              $messageType
+     * @param int $messageType
      */
     public function logGuzzleException(RequestLog $log, RequestException $exception, int $messageType) {
         if ($response = $exception->getResponse()) {
@@ -241,17 +234,34 @@ abstract class AbstractLogger {
 
     protected function getExceptionData(\Throwable $e) {
         return [
-            'class' => get_class($e),
-            'message' => $e->getMessage(),
-            'code' => $e->getCode(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'trace' => $e->getTrace(),
+            'class'    => get_class($e),
+            'message'  => $e->getMessage(),
+            'code'     => $e->getCode(),
+            'file'     => $e->getFile(),
+            'line'     => $e->getLine(),
+            'trace'    => $this->getNormalizedTrace($e->getTrace()),
             'previous' => $e->getPrevious() ? $this->getExceptionData($e->getPrevious()) : null
         ];
     }
 
+    protected function getNormalizedTrace(array $trace) {
+        $ret = [];
+
+        foreach ($trace as $row) {
+            $ret[] = [
+                'file'     => isset($row['file']) ? $row['file'] : '',
+                'line'     => isset($row['line']) ? $row['line'] : '',
+                'class'    => isset($row['class']) ? $row['class'] : '',
+                'function' => isset($row['function']) ? $row['function'] : '',
+                'type'     => isset($row['type']) ? $row['type'] : ''
+            ];
+        }
+
+        return $ret;
+    }
+
     public function __construct() {
+        //
     }
 
     /**
@@ -309,4 +319,5 @@ abstract class AbstractLogger {
     public function setLogMessageTypeRepository(RequestLogMessageTypeRepository $logMessageTypeRepository) {
         $this->logMessageTypeRepository = $logMessageTypeRepository;
     }
+
 }

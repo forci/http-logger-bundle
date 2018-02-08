@@ -1,16 +1,5 @@
 <?php
 
-/*
- * This file is part of the ForciHttpLoggerBundle package.
- *
- * Copyright (c) Forci Web Consulting Ltd.
- *
- * Author Martin Kirilov <martin@forci.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Forci\Bundle\HttpLogger\Subscriber;
 
 use Doctrine\Common\EventSubscriber;
@@ -27,11 +16,6 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\ORMException;
 
-/**
- * Translatable Doctrine2 subscriber.
- *
- * Provides mapping for translatable entities and their translations.
- */
 class MappingSubscriber implements EventSubscriber {
 
     protected $configs;
@@ -133,10 +117,10 @@ class MappingSubscriber implements EventSubscriber {
         $platform = $em->getConnection()->getDatabasePlatform();
 
         $idGenType = $metadata->generatorType;
-        if (ClassMetadata::GENERATOR_TYPE_AUTO == $idGenType) {
+        if ($idGenType == ClassMetadata::GENERATOR_TYPE_AUTO) {
             if ($platform->prefersSequences()) {
                 $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_SEQUENCE);
-            } elseif ($platform->prefersIdentityColumns()) {
+            } else if ($platform->prefersIdentityColumns()) {
                 $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_IDENTITY);
             } else {
                 $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_TABLE);
@@ -161,10 +145,10 @@ class MappingSubscriber implements EventSubscriber {
                 if ($platform instanceof Platforms\PostgreSqlPlatform) {
                     $columnName = $class->getSingleIdentifierColumnName();
                     $quoted = isset($class->fieldMappings[$fieldName]['quoted']) || isset($class->table['quoted']);
-                    $sequenceName = $class->getTableName().'_'.$columnName.'_seq';
-                    $definition = [
+                    $sequenceName = $class->getTableName() . '_' . $columnName . '_seq';
+                    $definition = array(
                         'sequenceName' => $platform->fixSchemaElementName($sequenceName)
-                    ];
+                    );
 
                     if ($quoted) {
                         $definition['quoted'] = true;
@@ -189,12 +173,12 @@ class MappingSubscriber implements EventSubscriber {
                     $fieldName = $class->getSingleIdentifierFieldName();
                     $columnName = $class->getSingleIdentifierColumnName();
                     $quoted = isset($class->fieldMappings[$fieldName]['quoted']) || isset($class->table['quoted']);
-                    $sequenceName = $class->getTableName().'_'.$columnName.'_seq';
-                    $definition = [
-                        'sequenceName' => $platform->fixSchemaElementName($sequenceName),
+                    $sequenceName = $class->getTableName() . '_' . $columnName . '_seq';
+                    $definition = array(
+                        'sequenceName'   => $platform->fixSchemaElementName($sequenceName),
                         'allocationSize' => 1,
-                        'initialValue' => 1,
-                    ];
+                        'initialValue'   => 1,
+                    );
 
                     if ($quoted) {
                         $definition['quoted'] = true;
@@ -219,20 +203,20 @@ class MappingSubscriber implements EventSubscriber {
                 break;
 
             case ClassMetadata::GENERATOR_TYPE_TABLE:
-                throw new ORMException('TableGenerator not yet implemented.');
+                throw new ORMException("TableGenerator not yet implemented.");
                 break;
 
             case ClassMetadata::GENERATOR_TYPE_CUSTOM:
                 $definition = $class->customGeneratorDefinition;
                 if (!class_exists($definition['class'])) {
-                    throw new ORMException("Can't instantiate custom generator : ".
+                    throw new ORMException("Can't instantiate custom generator : " .
                         $definition['class']);
                 }
-                $class->setIdGenerator(new $definition['class']());
+                $class->setIdGenerator(new $definition['class']);
                 break;
 
             default:
-                throw new ORMException('Unknown generator type: '.$class->generatorType);
+                throw new ORMException("Unknown generator type: " . $class->generatorType);
         }
     }
 
@@ -264,6 +248,8 @@ class MappingSubscriber implements EventSubscriber {
 
         $metadata->setPrimaryTable($this->getRequestLogTable($config));
 
+        $builder = new ClassMetadataBuilder($metadata);
+
 //        /**
 //         * @ORM\Id
 //         * @ORM\Column(name="id", type="integer", options={"unsigned"=true})
@@ -279,8 +265,7 @@ class MappingSubscriber implements EventSubscriber {
 //         */
 //        protected $statusCode;
         if (!$metadata->hasAssociation('statusCode')) {
-            $builder = new ClassMetadataBuilder($metadata);
-            $builder->createField('statusCode', 'smallint')->nullable(true)->option('unsigned', true)->build();
+            $builder->createField('statusCode', 'smallint')->columnName('status_code')->nullable(true)->option('unsigned', true)->build();
         }
 
 //        /**
@@ -288,8 +273,16 @@ class MappingSubscriber implements EventSubscriber {
 //         */
 //        protected $url;
         if (!$metadata->hasAssociation('url')) {
-            $builder = new ClassMetadataBuilder($metadata);
-            $builder->createField('url', 'text')->nullable(true)->build();
+            $builder->createField('url', 'text')->length(65535)->nullable(true)->build();
+        }
+
+//        /**
+//         * @ORM\Column(name="url_hash", type="string", nullable=true)
+//         */
+//        protected $urlHash;
+        if (!$metadata->hasAssociation('urlHash')) {
+            $builder->createField('urlHash', 'string')->columnName('url_hash')->length(32)->option('fixed', true)->nullable(true)->build();
+            $builder->addIndex(['url_hash'], 'url_hash');
         }
 
 //        /**
@@ -297,17 +290,7 @@ class MappingSubscriber implements EventSubscriber {
 //         */
 //        protected $method;
         if (!$metadata->hasAssociation('method')) {
-            $builder = new ClassMetadataBuilder($metadata);
             $builder->createField('method', 'string')->nullable(true)->build();
-        }
-
-//        /**
-//         * @ORM\Column(name="headers", type="array", nullable=false)
-//         */
-//        protected $headers;
-        if (!$metadata->hasAssociation('headers')) {
-            $builder = new ClassMetadataBuilder($metadata);
-            $builder->createField('headers', 'array')->nullable(false)->build();
         }
 
 //        /**
@@ -315,7 +298,6 @@ class MappingSubscriber implements EventSubscriber {
 //         */
 //        protected $date;
         if (!$metadata->hasAssociation('date')) {
-            $builder = new ClassMetadataBuilder($metadata);
             $builder->createField('date', 'datetime')->nullable(false)->build();
         }
 
@@ -324,7 +306,6 @@ class MappingSubscriber implements EventSubscriber {
 //         */
 //        protected $message;
         if (!$metadata->hasAssociation('message')) {
-            $builder = new ClassMetadataBuilder($metadata);
             $builder->createField('message', 'string')->nullable(false)->build();
         }
 
@@ -333,67 +314,46 @@ class MappingSubscriber implements EventSubscriber {
 //         */
 //        protected $debug;
         if (!$metadata->hasAssociation('debug')) {
-            $builder = new ClassMetadataBuilder($metadata);
             $builder->createField('debug', 'string')->nullable(true)->build();
         }
 
 //        /**
-//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\BookingLogMessage", inversedBy="requestTo", orphanRemoval=true)
-//         * @ORM\JoinColumn(name="request_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\BookingLogMessage", mappedBy="requestTo")
 //         */
 //        protected $request;
         if (!$metadata->hasAssociation('request')) {
             $metadata->mapOneToOne([
-                'fieldName' => 'request',
-                'inversedBy' => 'requestTo',
-                'cascade' => ['persist', 'merge'],
-                'fetch' => 'EAGER',
-                'joinColumns' => [[
-                    'name' => 'request_id',
-                    'referencedColumnName' => 'id',
-                    'nullable' => true
-                ]],
+                'fieldName'    => 'request',
+                'mappedBy'     => 'requestTo',
+                'cascade'      => ['persist', 'merge', 'remove'],
+                'fetch'        => 'EAGER',
                 'targetEntity' => $config['log_message_class']
             ]);
         }
 
 //        /**
-//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\BookingLogMessage", inversedBy="responseTo", orphanRemoval=true)
-//         * @ORM\JoinColumn(name="response_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\BookingLogMessage", mappedBy="responseTo")
 //         */
 //        protected $response;
         if (!$metadata->hasAssociation('response')) {
             $metadata->mapOneToOne([
-                'fieldName' => 'response',
-                'inversedBy' => 'responseTo',
-                'cascade' => ['persist', 'merge'],
-                'fetch' => 'EAGER',
-                'joinColumns' => [[
-                    'name' => 'response_id',
-                    'referencedColumnName' => 'id',
-                    'nullable' => true
-                ]],
+                'fieldName'    => 'response',
+                'mappedBy'     => 'responseTo',
+                'cascade'      => ['persist', 'merge', 'remove'],
+                'fetch'        => 'EAGER',
                 'targetEntity' => $config['log_message_class']
             ]);
         }
 
 //        /**
-//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\RequestLogException", inversedBy="log", orphanRemoval=true)
-//         * @ORM\JoinColumn(name="exception_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\RequestLogException", mappedBy="log", orphanRemoval=true)
 //         */
 //        protected $exception;
         if (!$metadata->hasAssociation('exception')) {
             $metadata->mapOneToOne([
-                'fieldName' => 'exception',
-                'inversedBy' => 'log',
-                'orphanRemoval' => true,
-                'cascade' => ['persist', 'merge'],
-                'fetch' => 'EAGER',
-                'joinColumns' => [[
-                    'name' => 'exception_id',
-                    'referencedColumnName' => 'id',
-                    'nullable' => true
-                ]],
+                'fieldName'    => 'exception',
+                'mappedBy'     => 'log',
+                'fetch'        => 'EAGER',
                 'targetEntity' => $config['log_exception_class']
             ]);
         }
@@ -405,6 +365,8 @@ class MappingSubscriber implements EventSubscriber {
 
         $metadata->setPrimaryTable($this->getRequestLogMessageTable($config));
 
+        $builder = new ClassMetadataBuilder($metadata);
+
 //        /**
 //         * @ORM\Id
 //         * @ORM\Column(name="id", type="integer", options={"unsigned"=true})
@@ -416,38 +378,67 @@ class MappingSubscriber implements EventSubscriber {
         }
 
 //        /**
-//         * @ORM\Column(name="content", type="text", length=16777215, nullable=false)
+//         * @ORM\Column(name="headers", type="array", nullable=false)
 //         */
-//        protected $content;
-        if (!$metadata->hasAssociation('content')) {
-            $builder = new ClassMetadataBuilder($metadata);
-            $builder->createField('content', 'text')->length(16777215)->nullable(false)->build();
+//        protected $headers;
+        if (!$metadata->hasAssociation('headers')) {
+            $builder->createField('headers', 'array')->nullable(false)->build();
         }
 
 //        /**
-//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\RequestLog", mappedBy="request")
+//         * @ORM\Column(name="content", type="text", length=4294967295, nullable=false)
+//         */
+//        protected $content;
+        if (!$metadata->hasAssociation('content')) {
+            $builder->createField('content', 'text')->length(4294967295)->nullable(false)->build();
+        }
+
+//        /**
+//         * @ORM\Column(name="date", type="datetime", nullable=false)
+//         */
+//        protected $date;
+        if (!$metadata->hasAssociation('date')) {
+            $builder->createField('date', 'datetime')->nullable(false)->build();
+        }
+
+//        /**
+//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\RequestLog", inversedBy="request", orphanRemoval=true)
+//         * @ORM\JoinColumn(name="request_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
 //         */
 //        protected $requestTo;
         if (!$metadata->hasAssociation('requestTo')) {
             $metadata->mapOneToOne([
-                'fieldName' => 'requestTo',
-                'mappedBy' => 'request',
-                'cascade' => ['persist', 'merge', 'remove'],
-                'fetch' => 'EAGER',
+                'fieldName'    => 'requestTo',
+                'inversedBy'   => 'request',
+                'cascade'      => ['persist', 'merge'],
+                'fetch'        => 'EAGER',
+                'joinColumns'  => [[
+                    'name'                 => 'request_to_id',
+                    'referencedColumnName' => 'id',
+                    'onDelete'             => 'CASCADE',
+                    'nullable'             => true
+                ]],
                 'targetEntity' => $config['log_class']
             ]);
         }
 
 //        /**
-//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\RequestLog", mappedBy="response")
+//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\RequestLog", inversedBy="response", orphanRemoval=true)
+//         * @ORM\JoinColumn(name="response_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
 //         */
 //        protected $responseTo;
         if (!$metadata->hasAssociation('responseTo')) {
             $metadata->mapOneToOne([
-                'fieldName' => 'responseTo',
-                'mappedBy' => 'response',
-                'cascade' => ['persist', 'merge', 'remove'],
-                'fetch' => 'EAGER',
+                'fieldName'    => 'responseTo',
+                'inversedBy'   => 'response',
+                'cascade'      => ['persist', 'merge'],
+                'fetch'        => 'EAGER',
+                'joinColumns'  => [[
+                    'name'                 => 'response_to_id',
+                    'referencedColumnName' => 'id',
+                    'onDelete'             => 'CASCADE',
+                    'nullable'             => true
+                ]],
                 'targetEntity' => $config['log_class']
             ]);
         }
@@ -459,25 +450,16 @@ class MappingSubscriber implements EventSubscriber {
 //        protected $type;
         if (!$metadata->hasAssociation('type')) {
             $metadata->mapManyToOne([
-                'fieldName' => 'type',
-                'inversedBy' => 'messages',
-                'fetch' => 'EAGER',
-                'joinColumns' => [[
-                    'name' => 'type_id',
+                'fieldName'    => 'type',
+                'inversedBy'   => 'messages',
+                'fetch'        => 'EAGER',
+                'joinColumns'  => [[
+                    'name'                 => 'type_id',
                     'referencedColumnName' => 'id',
-                    'nullable' => false
+                    'nullable'             => false
                 ]],
                 'targetEntity' => $config['log_message_type_class']
             ]);
-        }
-
-//        /**
-//         * @ORM\Column(name="date", type="datetime", nullable=false)
-//         */
-//        protected $date;
-        if (!$metadata->hasAssociation('date')) {
-            $builder = new ClassMetadataBuilder($metadata);
-            $builder->createField('date', 'datetime')->nullable(false)->build();
         }
     }
 
@@ -487,6 +469,8 @@ class MappingSubscriber implements EventSubscriber {
 
         $metadata->setPrimaryTable($this->getRequestLogMessageTypeTable($config));
 
+        $builder = new ClassMetadataBuilder($metadata);
+
 //        /**
 //         * @ORM\Id
 //         * @ORM\Column(name="id", type="integer", options={"unsigned"=true})
@@ -494,7 +478,6 @@ class MappingSubscriber implements EventSubscriber {
 //         */
 //        protected $id;
         if (!$metadata->hasAssociation('id')) {
-            $builder = new ClassMetadataBuilder($metadata);
             $builder->createField('id', 'integer')->makePrimaryKey()->option('unsigned', true)->build();
 //            $this->mapId($metadata, $em);
         }
@@ -504,7 +487,6 @@ class MappingSubscriber implements EventSubscriber {
 //         */
 //        protected $name;
         if (!$metadata->hasAssociation('name')) {
-            $builder = new ClassMetadataBuilder($metadata);
             $builder->createField('name', 'string')->nullable(false)->build();
         }
 
@@ -514,9 +496,9 @@ class MappingSubscriber implements EventSubscriber {
 //        protected $messages;
         if (!$metadata->hasAssociation('messages')) {
             $metadata->mapOneToMany([
-                'fieldName' => 'messages',
-                'mappedBy' => 'type',
-                'fetch' => 'EAGER',
+                'fieldName'    => 'messages',
+                'mappedBy'     => 'type',
+                'fetch'        => 'EAGER',
                 'targetEntity' => $config['log_message_class'],
             ]);
         }
@@ -527,6 +509,8 @@ class MappingSubscriber implements EventSubscriber {
         $config = $this->getConfigForClass($reflection->getName());
 
         $metadata->setPrimaryTable($this->getRequestLogExceptionTable($config));
+
+        $builder = new ClassMetadataBuilder($metadata);
 
 //        /**
 //         * @ORM\Id
@@ -539,12 +523,33 @@ class MappingSubscriber implements EventSubscriber {
         }
 
 //        /**
+//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\RequestLog", inversedBy="log", orphanRemoval=true)
+//         * @ORM\JoinColumn(name="log_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+//         */
+//        protected $log;
+        if (!$metadata->hasAssociation('log')) {
+            $metadata->mapOneToOne([
+                'fieldName'     => 'log',
+                'inversedBy'    => 'exception',
+                'orphanRemoval' => true,
+                'cascade'       => ['persist', 'merge'],
+                'fetch'         => 'EAGER',
+                'joinColumns'   => [[
+                    'name'                 => 'log_id',
+                    'referencedColumnName' => 'id',
+                    'onDelete'             => 'CASCADE',
+                    'nullable'             => true
+                ]],
+                'targetEntity'  => $config['log_class']
+            ]);
+        }
+
+//        /**
 //         * @ORM\Column(name="message", type="text", nullable=true)
 //         */
 //        protected $message;
 
         if (!$metadata->hasAssociation('message')) {
-            $builder = new ClassMetadataBuilder($metadata);
             $builder->createField('message', 'text')->nullable(true)->build();
         }
 
@@ -553,7 +558,6 @@ class MappingSubscriber implements EventSubscriber {
 //         */
 //        protected $code;
         if (!$metadata->hasAssociation('code')) {
-            $builder = new ClassMetadataBuilder($metadata);
             $builder->createField('code', 'string')->nullable(true)->build();
         }
 //
@@ -562,7 +566,6 @@ class MappingSubscriber implements EventSubscriber {
 //         */
 //        protected $file;
         if (!$metadata->hasAssociation('file')) {
-            $builder = new ClassMetadataBuilder($metadata);
             $builder->createField('file', 'text')->nullable(false)->build();
         }
 
@@ -571,7 +574,6 @@ class MappingSubscriber implements EventSubscriber {
 //         */
 //        protected $line;
         if (!$metadata->hasAssociation('line')) {
-            $builder = new ClassMetadataBuilder($metadata);
             $builder->createField('line', 'integer')->nullable(false)->option('unsigned', true)->build();
         }
 
@@ -580,8 +582,7 @@ class MappingSubscriber implements EventSubscriber {
 //         */
 //        protected $stackTraceString;
         if (!$metadata->hasAssociation('stackTraceString')) {
-            $builder = new ClassMetadataBuilder($metadata);
-            $builder->createField('stackTraceString', 'text')->length(16777215)->nullable(false)->build();
+            $builder->createField('stackTraceString', 'text')->columnName('stack_trace_string')->length(16777215)->nullable(false)->build();
         }
 
 //        /**
@@ -589,7 +590,6 @@ class MappingSubscriber implements EventSubscriber {
 //         */
 //        protected $json;
         if (!$metadata->hasAssociation('json')) {
-            $builder = new ClassMetadataBuilder($metadata);
             $builder->createField('json', 'text')->length(16777215)->nullable(false)->build();
         }
 
@@ -598,8 +598,7 @@ class MappingSubscriber implements EventSubscriber {
 //         */
 //        protected $extraData;
         if (!$metadata->hasAssociation('extraData')) {
-            $builder = new ClassMetadataBuilder($metadata);
-            $builder->createField('extraData', 'text')->length(16777215)->nullable(true)->build();
+            $builder->createField('extraData', 'text')->columnName('extra_data')->length(16777215)->nullable(true)->build();
         }
 
 //        /**
@@ -607,21 +606,8 @@ class MappingSubscriber implements EventSubscriber {
 //         */
 //        protected $date;
         if (!$metadata->hasAssociation('date')) {
-            $builder = new ClassMetadataBuilder($metadata);
             $builder->createField('date', 'datetime')->nullable(false)->build();
         }
-
-//        /**
-//         * @ORM\OneToOne(targetEntity="Forci\Bundle\HttpLogger\Entity\RequestLog", mappedBy="exception")
-//         */
-//        protected $log;
-        if (!$metadata->hasAssociation('log')) {
-            $metadata->mapOneToOne([
-                'fieldName' => 'log',
-                'mappedBy' => 'exception',
-                'fetch' => 'EAGER',
-                'targetEntity' => $config['log_class'],
-            ]);
-        }
     }
+
 }
