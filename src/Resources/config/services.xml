@@ -4,12 +4,16 @@
 
     <parameters>
         <parameter key="forci_http_logger.doctrine_mapping_subscriber.class">Forci\Bundle\HttpLogger\Subscriber\MappingSubscriber</parameter>
+        <parameter key="forci_http_logger.twig.log_extension.class">Forci\Bundle\HttpLogger\Twig\LogExtension</parameter>
     </parameters>
 
     <services>
         <service id="forci_http_logger.doctrine_mapping_subscriber" class="%forci_http_logger.doctrine_mapping_subscriber.class%">
             <argument>%forci_http_logger.configs%</argument>
             <tag name="doctrine.event_subscriber"/>
+        </service>
+        <service id="forci_http_logger.twig.log_extension" class="%forci_http_logger.twig.log_extension.class%">
+            <tag name="twig.extension"/>
         </service>
     </services>
 
