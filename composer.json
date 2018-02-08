@@ -24,7 +24,7 @@
         "wucdbm/php-cs-fixers": "~0.2"
     },
     "autoload": {
-        "psr-4": { "Forci\\Bundle\\HttpLoggerBundle\\": "src" }
+        "psr-4": { "Forci\\Bundle\\HttpLogger\\": "src" }
     },
     "config": {
         "bin-dir": "bin"
