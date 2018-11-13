@@ -151,28 +151,28 @@ class YourRequestLogLogger extends AbstractLogger {
     /**
      * @return YourRequestLog
      */
-    protected function createLog() {
+    public function createLog() {
         return new YourRequestLog();
     }
 
     /**
      * @return RequestLogMessage
      */
-    protected function createLogMessage() {
+    public function createLogMessage() {
         return new RequestLogMessage();
     }
 
     /**
      * @return RequestLogException
      */
-    protected function createLogException() {
+    public function createLogException() {
         return new RequestLogException();
     }
 
     /**
      * @return RequestLogMessageType
      */
-    protected function createLogMessageType() {
+    public function createLogMessageType() {
         return new RequestLogMessageType();
     }
 
