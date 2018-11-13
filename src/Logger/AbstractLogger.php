@@ -70,22 +70,22 @@ abstract class AbstractLogger {
      * We can't really set the return type here
      * @return RequestLog
      */
-    protected abstract function createLog();
+    public abstract function createLog();
 
     /**
      * @return RequestLogMessage
      */
-    protected abstract function createLogMessage();
+    public abstract function createLogMessage();
 
     /**
      * @return RequestLogException
      */
-    protected abstract function createLogException();
+    public abstract function createLogException();
 
     /**
      * @return RequestLogMessageType
      */
-    protected abstract function createLogMessageType();
+    public abstract function createLogMessageType();
 
     /**
      * You should implement your own log method, if you require any additional parameters
@@ -168,7 +168,8 @@ abstract class AbstractLogger {
             // Sometimes, as it appears, content is not in UTF-8, regardless of what server reports
             // Other times, headers say UTF-8, HTML content says iso-8859-1 via meta http-equiv="Content-Type"
             // So, always convert
-            $content = mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content));
+//            $content = mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content));
+            $content = iconv("UTF-8", "UTF-8//IGNORE", $content);
         } catch (\Throwable $e) {
             $log->setDebug(sprintf('Could not convert content to UTF-8'));
             $content = sprintf('%s: %s', get_class($e), $e->getMessage());

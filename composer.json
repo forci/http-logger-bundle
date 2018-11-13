@@ -16,7 +16,8 @@
         "twig/twig": "~2.0",
         "doctrine/doctrine-bundle": "~1.6",
         "shanethehat/pretty-xml": "~1.0",
-        "camspiers/json-pretty": "~1.0"
+        "camspiers/json-pretty": "~1.0",
+        "ext-iconv": "*"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "~6.0",
