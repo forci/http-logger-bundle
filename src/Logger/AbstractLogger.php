@@ -164,16 +164,18 @@ abstract class AbstractLogger {
         $content = $body->getContents();
         $body->rewind();
 
-        try {
-            // Sometimes, as it appears, content is not in UTF-8, regardless of what server reports
-            // Other times, headers say UTF-8, HTML content says iso-8859-1 via meta http-equiv="Content-Type"
-            // So, always convert
-//            $content = mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content));
-            $content = iconv("UTF-8", "UTF-8//IGNORE", $content);
-        } catch (\Throwable $e) {
+        // Sometimes, as it appears, content is not in UTF-8, regardless of what server reports
+        // Other times, headers say UTF-8, HTML content says iso-8859-1 via meta http-equiv="Content-Type"
+        // So, always convert
+        $encoding = mb_detect_encoding($content);
+
+        if (false === $encoding) {
             $log->setDebug(sprintf('Could not convert content to UTF-8'));
-            $content = sprintf('%s: %s', get_class($e), $e->getMessage());
+            $content = 'Could not convert content to UTF-8';
+        } else {
+            $content = mb_convert_encoding($content, 'UTF-8', $encoding);
         }
+//        $content = iconv("UTF-8", "UTF-8//IGNORE", $content);
 
         $messageType = $this->getLogMessageType($messageType);
         $message = $this->createLogMessage();
