@@ -19,8 +19,8 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 class Configuration implements ConfigurationInterface {
 
     public function getConfigTreeBuilder() {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('forci_http_logger');
+        $treeBuilder = new TreeBuilder('forci_http_logger');
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
