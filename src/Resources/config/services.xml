@@ -15,6 +15,7 @@
         <service id="forci_http_logger.twig.log_extension" class="%forci_http_logger.twig.log_extension.class%">
             <tag name="twig.extension"/>
         </service>
+        <service id="Forci\Bundle\HttpLogger\Controller\MessageController" public="true"/>
     </services>
 
 </container>

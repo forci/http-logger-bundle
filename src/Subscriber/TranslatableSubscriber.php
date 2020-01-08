@@ -94,7 +94,7 @@ class TranslatableSubscriber extends AbstractSubscriber {
         $platform = $em->getConnection()->getDatabasePlatform();
         if (!$class->hasField('id')) {
             $builder = new ClassMetadataBuilder($class);
-            $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
+            $builder->createField('id', 'integer')->makePrimaryKey()->generatedValue()->build();
             /// START DOCTRINE CODE
             $idGenType = $class->generatorType;
             if (ClassMetadata::GENERATOR_TYPE_AUTO == $idGenType) {
