@@ -4,8 +4,9 @@ namespace Forci\Bundle\HttpLogger\Twig;
 
 use Forci\Bundle\HttpLogger\Entity\RequestLog;
 use Forci\Bundle\HttpLogger\Entity\RequestLogMessage;
+use Twig\Extension\AbstractExtension;
 
-class LogExtension extends \Twig_Extension {
+class LogExtension extends AbstractExtension {
 
     public function getFilters() {
         return [
